@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* ─── Brand tokens (Tailwind v4 @theme) ──────────────────────────────── */
+@theme {
+  /* Colores del Figma */
+  --color-brand-lime:     #CCFF00;
+  --color-brand-pink:     #FCE4EC;
+  --color-brand-mint:     #F0FAF5;
+  --color-brand-orange:   #F5A623;
+  --color-brand-yellow:   #FFFE99;
+  --color-brand-purple:   #8B5CF6;
+  --color-brand-lavender: #C4B5FD;
+  --color-brand-salmon:   #FFACAC;
+
+  /* Tipografía */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Radio estándar del diseño */
+  --radius-card: 2rem;
+  --radius-card-lg: 2.5rem;
+  --radius-card-xl: 3rem;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────── */
+:root {
+  --background: #F0FAF5;   /* brand-mint — fondo global */
+  --foreground: #111827;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar discreta ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #d1d5db; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }

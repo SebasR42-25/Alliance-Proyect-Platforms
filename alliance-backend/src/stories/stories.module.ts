@@ -1,0 +1,15 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { StoriesService } from './stories.service';
+import { StoriesController } from './stories.controller';
+import { Story, StorySchema } from './schemas/story.schema';
+import { CloudinaryModule } from '../common/cloudinary/cloudinary.module';
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Story.name, schema: StorySchema }]),
+    CloudinaryModule, // 2. Agrégalo aquí para que StoriesService pueda usarlo
+  ],
+  controllers: [StoriesController],
+  providers: [StoriesService],
+})
+export class StoriesModule {}

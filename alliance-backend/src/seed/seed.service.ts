@@ -28,34 +28,10 @@ export class SeedService {
     await this.jobModel.deleteMany({});
     await this.storyModel.deleteMany({});
     const companies = await this.companyModel.insertMany([
-      {
-        name: 'Amazon',
-        industry: 'Technology',
-        description: 'Líder mundial en e-commerce y cloud computing (AWS).',
-        logoUrl: 'https://logo.clearbit.com/amazon.com',
-        availableJobs: 5,
-      },
-      {
-        name: 'Microsoft',
-        industry: 'Technology',
-        description: 'Software, cloud y productividad empresarial.',
-        logoUrl: 'https://logo.clearbit.com/microsoft.com',
-        availableJobs: 3,
-      },
-      {
-        name: 'Google',
-        industry: 'Technology',
-        description: 'Búsqueda, publicidad y servicios en la nube.',
-        logoUrl: 'https://logo.clearbit.com/google.com',
-        availableJobs: 8,
-      },
-      {
-        name: 'Bancolombia',
-        industry: 'Finance & Banking',
-        description: 'Banco líder en Colombia con presencia regional.',
-        logoUrl: 'https://logo.clearbit.com/bancolombia.com',
-        availableJobs: 12,
-      },
+      { name: 'Amazon',      industry: 'Technology',       description: 'Líder mundial en e-commerce y cloud computing (AWS).', domain: 'amazon.com',      availableJobs: 5  },
+      { name: 'Microsoft',   industry: 'Technology',       description: 'Software, cloud y productividad empresarial.',          domain: 'microsoft.com',   availableJobs: 3  },
+      { name: 'Google',      industry: 'Technology',       description: 'Búsqueda, publicidad y servicios en la nube.',          domain: 'google.com',      availableJobs: 8  },
+      { name: 'Bancolombia', industry: 'Finance & Banking', description: 'Banco líder en Colombia con presencia regional.',      domain: 'bancolombia.com', availableJobs: 12 },
     ]);
     const passwordHash = await bcrypt.hash('Password123!', 10);
     const SEED_USERS = [

@@ -33,12 +33,10 @@ export default function LoginPage() {
 
   return (
     <div className="bg-white rounded-card-lg px-10 py-10 w-full max-w-md shadow-xl">
-      {/* Title */}
       <h1 className="text-center text-lg font-bold text-violet-600 mb-6">
         Inicia Sesión a Traves de
       </h1>
 
-      {/* OAuth buttons */}
       <div className="flex gap-3 mb-5">
         <button
           onClick={() => signIn('google', { callbackUrl })}
@@ -77,12 +75,10 @@ export default function LoginPage() {
         </button>
       </div>
 
-      {/* Divider */}
       <p className="text-center text-violet-600 font-semibold text-sm mb-5">
         ó Inicia Sesión con Tus Datos
       </p>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="email"

@@ -13,7 +13,6 @@ import { uploadImage } from '@/services/upload.service';
 import { showToast } from '@/lib/toast';
 import type { User } from '@/types';
 
-/* ─── Completion config ──────────────────────────────────── */
 type CompletionKey = 'name' | 'skills' | 'location' | 'bio' | 'picture' | 'connections' | 'seniority' | 'specialization' | 'sector';
 
 const COMPLETION_KEYS: { label: string; key: CompletionKey; modal: string }[] = [
@@ -45,7 +44,6 @@ function buildCompletionItems(user?: User) {
   });
 }
 
-/* ─── Modal wrapper ──────────────────────────────────────── */
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -62,7 +60,6 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   );
 }
 
-/* ─── Basic Info Modal ───────────────────────────────────── */
 function BasicInfoModal({ user, token, onClose }: { user: User; token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [form, setForm] = useState({
@@ -128,7 +125,6 @@ function BasicInfoModal({ user, token, onClose }: { user: User; token: string; o
   );
 }
 
-/* ─── Skills Modal ───────────────────────────────────────── */
 function SkillsModal({ user, token, onClose }: { user: User; token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [skills, setSkills] = useState<string[]>(user.skills ?? []);
@@ -193,7 +189,6 @@ function SkillsModal({ user, token, onClose }: { user: User; token: string; onCl
   );
 }
 
-/* ─── Job Details Modal ──────────────────────────────────── */
 const SENIORITY_OPTIONS = ['Intern', 'Junior', 'Mid-level', 'Senior', 'Lead', 'Principal', 'Manager', 'Director'];
 const SPECIALIZATION_OPTIONS = ['Frontend Development', 'Backend Development', 'Full Stack', 'DevOps / SRE', 'Data Science', 'Machine Learning', 'Product Management', 'UX/UI Design', 'Cybersecurity', 'Cloud Architecture'];
 const SECTOR_OPTIONS = ['Technology', 'Finance', 'Healthcare', 'Education', 'E-commerce', 'Consulting', 'Media & Entertainment', 'Manufacturing', 'Government', 'NGO / Nonprofit'];
@@ -277,7 +272,6 @@ function JobDetailsModal({ user, token, onClose }: { user: User; token: string; 
   );
 }
 
-/* ─── Avatar Upload Modal ────────────────────────────────── */
 function AvatarModal({ user, token, onClose }: { user: User; token: string; onClose: () => void }) {
   const qc       = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -358,7 +352,6 @@ function AvatarModal({ user, token, onClose }: { user: User; token: string; onCl
   );
 }
 
-/* ─── Score Ring ─────────────────────────────────────────── */
 function ScoreRing({ pct }: { pct: number }) {
   const r = 32;
   const circ = 2 * Math.PI * r;
@@ -384,7 +377,6 @@ function ScoreRing({ pct }: { pct: number }) {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 type ModalType = 'basic' | 'skills' | 'job' | 'avatar' | null;
 
 export default function ProfilePage() {
@@ -410,7 +402,6 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-6">
 
-      {/* ── Completion card ── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <div className="flex items-center justify-between mb-5">
           <div>
@@ -460,9 +451,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Profile card ── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {/* Banner */}
         <div className="h-36 bg-linear-to-br from-violet-100 via-gray-100 to-pink-100 relative">
           <div className="absolute right-12 top-4 w-20 h-20 bg-white/30 rounded-full" />
           <div className="absolute right-4  top-10 w-12 h-12 bg-white/20 rounded-full" />
@@ -543,7 +532,6 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Stats row */}
           <div className="grid grid-cols-3 gap-4 mt-5 pt-5 border-t border-gray-100">
             <div className="text-center">
               <p className="text-xl font-black text-gray-900">{user?.connections?.length ?? 0}</p>
@@ -563,7 +551,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Quick edit buttons ── */}
       <div className="grid grid-cols-3 gap-3">
         {[
           { icon: Pencil,    label: 'Basic Info',  modal: 'basic'  as ModalType },
@@ -581,7 +568,6 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {/* ── Search for staff ── */}
       <div className="bg-linear-to-br from-violet-50 to-pink-50 rounded-2xl border border-violet-100 p-6 text-center">
         <p className="text-xs text-violet-500 font-bold mb-1">Search for staff</p>
         <h2 className="text-base font-black text-gray-900 mb-1">
@@ -598,7 +584,6 @@ export default function ProfilePage() {
         </a>
       </div>
 
-      {/* Not logged in */}
       {!token && (
         <div className="bg-brand-pink rounded-2xl p-8 text-center">
           <p className="text-gray-700 font-semibold mb-3">Sign in to view your full profile</p>
@@ -608,7 +593,6 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* ── Modals ── */}
       {token && user && activeModal === 'basic'  && <BasicInfoModal  user={user} token={token} onClose={() => setActiveModal(null)} />}
       {token && user && activeModal === 'skills' && <SkillsModal     user={user} token={token} onClose={() => setActiveModal(null)} />}
       {token && user && activeModal === 'job'    && <JobDetailsModal user={user} token={token} onClose={() => setActiveModal(null)} />}

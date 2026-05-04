@@ -2,6 +2,7 @@ import { Document } from 'mongoose';
 export declare class Company extends Document {
     name: string;
     logoUrl: string;
+    domain: string;
     description: string;
     availableJobs: number;
     industry: string;
@@ -53,6 +54,15 @@ export declare const CompanySchema: import("mongoose").Schema<Company, import("m
         id: string;
     }> | undefined;
     logoUrl?: import("mongoose").SchemaDefinitionProperty<string, Company, Document<unknown, {}, Company, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Company & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }> | undefined;
+    domain?: import("mongoose").SchemaDefinitionProperty<string, Company, Document<unknown, {}, Company, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Company & Required<{
         _id: import("mongoose").Types.ObjectId;

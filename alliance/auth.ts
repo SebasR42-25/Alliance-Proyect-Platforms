@@ -54,13 +54,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      // Credentials flow — user object contains accessToken from authorize()
       if (user) {
         token.accessToken = (user as { accessToken?: string }).accessToken;
         token.userId      = user.id;
       }
 
-      // OAuth providers — exchange OAuth profile for NestJS JWT
       if (account && account.provider !== 'credentials' && profile) {
         try {
           const res = await fetch(`${API_URL}/auth/oauth`, {
@@ -79,7 +77,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.userId      = data.user.id;
           }
         } catch {
-          // OAuth exchange failed — token remains without accessToken
         }
       }
       return token;

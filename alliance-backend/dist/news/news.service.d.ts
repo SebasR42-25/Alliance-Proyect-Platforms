@@ -21,6 +21,7 @@ export interface NewsApiResponse {
 export declare class NewsService {
     private readonly httpService;
     private readonly configService;
+    private readonly logger;
     constructor(httpService: HttpService, configService: ConfigService);
     getTechNews(): Promise<NewsArticle[]>;
 }

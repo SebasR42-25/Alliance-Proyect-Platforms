@@ -15,6 +15,7 @@ const mongoose_2 = require("mongoose");
 let Company = class Company extends mongoose_2.Document {
     name;
     logoUrl;
+    domain;
     description;
     availableJobs;
     industry;
@@ -28,6 +29,10 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Company.prototype, "logoUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Company.prototype, "domain", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)

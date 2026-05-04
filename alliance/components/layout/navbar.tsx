@@ -24,7 +24,6 @@ const NAV_LINKS = [
   { href: '/',           label: 'Posts',       icon: LayoutGrid   },
 ];
 
-/* ─── Search Modal ───────────────────────────────────────── */
 interface SearchResults {
   results: {
     users: UserType[];
@@ -176,7 +175,6 @@ function SearchModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-/* ─── Notifications Panel ────────────────────────────────── */
 function NotificationsPanel({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
 
@@ -277,7 +275,6 @@ function NotificationsPanel({ token, onClose }: { token: string; onClose: () => 
   );
 }
 
-/* ─── Navbar ─────────────────────────────────────────────── */
 export default function Navbar() {
   const pathname          = usePathname();
   const { data: session } = useSession();
@@ -308,7 +305,6 @@ export default function Navbar() {
 
   const unreadCount = notifData?.count ?? 0;
 
-  /* Keyboard shortcut: Cmd/Ctrl+K */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {

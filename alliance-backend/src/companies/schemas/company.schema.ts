@@ -7,6 +7,8 @@ export class Company extends Document {
   @Prop()
   logoUrl: string;
   @Prop()
+  domain: string;
+  @Prop()
   description: string;
   @Prop({ default: 0 })
   availableJobs: number;

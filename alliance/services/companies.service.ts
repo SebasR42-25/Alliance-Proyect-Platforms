@@ -6,6 +6,7 @@ export interface CreateCompanyDto {
   description?: string;
   industry?: string;
   logoUrl?: string;
+  domain?: string;
   availableJobs?: number;
 }
 

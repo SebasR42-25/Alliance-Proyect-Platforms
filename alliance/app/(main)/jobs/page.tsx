@@ -11,9 +11,9 @@ import {
 import { getJobs, saveJob, applyToJob, createJob } from '@/services/jobs.service';
 import { getCompanies } from '@/services/companies.service';
 import { showToast } from '@/lib/toast';
+import CompanyLogo from '@/components/ui/company-logo';
 import type { Job, Company } from '@/types';
 
-/* ─── Create Job Modal ───────────────────────────────────── */
 function CreateJobModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [form, setForm] = useState({
@@ -150,7 +150,6 @@ function CreateJobModal({ token, onClose }: { token: string; onClose: () => void
   );
 }
 
-/* ─── Job Card ───────────────────────────────────────────── */
 function JobCard({ job, token, userId }: { job: Job; token?: string; userId?: string }) {
   const qc      = useQueryClient();
   const company = job.company !== null && typeof job.company === 'object' ? job.company as Company : null;
@@ -180,12 +179,8 @@ function JobCard({ job, token, userId }: { job: Job; token?: string; userId?: st
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-3 hover:shadow-md transition-shadow group">
       <div className="flex items-start justify-between">
-        <div className="w-12 h-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-          {company?.logoUrl
-            ? <img src={company.logoUrl} alt={`${company.name} logo`} className="w-full h-full object-contain p-1"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            : <span className="text-lg font-black text-gray-400">{(company?.name ?? 'J').charAt(0).toUpperCase()}</span>
-          }
+        <div className="w-12 h-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-1">
+          <CompanyLogo name={company?.name ?? 'J'} domain={company?.domain} logoUrl={company?.logoUrl} size={40} />
         </div>
         <button onClick={() => token && saveMutation.mutate()} disabled={!token}
           className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700 disabled:opacity-30">
@@ -224,7 +219,6 @@ function JobCard({ job, token, userId }: { job: Job; token?: string; userId?: st
   );
 }
 
-/* ─── Skeleton ───────────────────────────────────────────── */
 function SkeletonCard() {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 animate-pulse flex flex-col gap-3">
@@ -235,7 +229,6 @@ function SkeletonCard() {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function JobsPage() {
   const { data: session } = useSession();
   const token             = session?.accessToken;
@@ -319,9 +312,8 @@ export default function JobsPage() {
       {activeCompany && (
         <div className="flex items-center gap-3 mb-2">
           <div className="flex items-center gap-2 bg-violet-50 border border-violet-200 text-violet-700 text-sm font-semibold px-4 py-2 rounded-full">
-            {activeCompany.logoUrl && (
-              <img src={activeCompany.logoUrl} alt="" className="w-5 h-5 object-contain rounded"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            {(activeCompany.domain || activeCompany.logoUrl) && (
+              <CompanyLogo name={activeCompany.name} domain={activeCompany.domain} logoUrl={activeCompany.logoUrl} size={20} className="rounded" />
             )}
             <Building2 size={14} />
             <span>Showing jobs at <strong>{activeCompany.name}</strong></span>

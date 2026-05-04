@@ -9,6 +9,10 @@ export class CreateCompanyDto {
   @IsString()
   @IsOptional()
   logoUrl?: string;
+  @ApiProperty({ example: 'amazon.com', required: false })
+  @IsString()
+  @IsOptional()
+  domain?: string;
   @ApiProperty({ example: 'Parque tecnológico y de negocios', required: false })
   @IsString()
   @IsOptional()

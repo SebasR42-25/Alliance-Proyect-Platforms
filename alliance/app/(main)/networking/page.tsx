@@ -10,7 +10,6 @@ import { createConversation } from '@/services/chat.service';
 import { showToast } from '@/lib/toast';
 import type { User } from '@/types';
 
-/* ─── Mock recruiters ────────────────────────────────────── */
 const MOCK_RECRUITERS = [
   { id: 'm1', name: 'Sabrina Williams',  role: 'HR Management',               company: 'ACG Automation Consulting Group at Apple',      hiring: 'Consulting, IT, and Software Development', photo: null },
   { id: 'm2', name: 'Peggy Hurtado',     role: 'Senior Project Manager',       company: 'Palantir Headhunter',                           hiring: 'Consulting, IT, and Software Development', photo: null },
@@ -18,7 +17,6 @@ const MOCK_RECRUITERS = [
   { id: 'm4', name: 'Kirsten M. Kern',   role: 'HR Specialist',                company: 'Unknown',                                       hiring: 'Internet and Information Technology',      photo: null },
 ];
 
-/* ─── Recruiter Card ─────────────────────────────────────── */
 function RecruiterCard({
   user,
   token,
@@ -101,7 +99,6 @@ function RecruiterCard({
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function NetworkingPage() {
   const { data: session } = useSession();
   const token             = session?.accessToken;

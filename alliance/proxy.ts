@@ -2,10 +2,8 @@ import { auth } from '@/auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Rutas públicas — no requieren autenticación
 const PUBLIC_PATHS = ['/login', '/register'];
 
-// En Next.js 16, el archivo se llama proxy.ts en lugar de middleware.ts
 export const proxy = auth((req: NextRequest & { auth: unknown }) => {
   const { nextUrl }   = req;
   const isLoggedIn    = !!(req as { auth: unknown }).auth;

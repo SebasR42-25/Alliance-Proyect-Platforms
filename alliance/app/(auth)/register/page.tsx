@@ -18,7 +18,6 @@ export default function RegisterPage() {
     setError('');
     try {
       await registerUser(form.name, form.email, form.password);
-      // Auto-login tras registrarse
       await signIn('credentials', {
         email:       form.email,
         password:    form.password,
@@ -33,18 +32,15 @@ export default function RegisterPage() {
 
   return (
     <div className="bg-white rounded-card-lg px-10 py-10 w-full max-w-md shadow-xl">
-      {/* Title */}
       <h1 className="text-center text-lg font-bold text-violet-600 mb-6">
         Registrate a Traves de
       </h1>
 
-      {/* OAuth buttons */}
       <div className="flex gap-3 mb-5">
         <button
           onClick={() => signIn('google', { callbackUrl: '/' })}
           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-700 transition-colors"
         >
-          {/* Google icon */}
           <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
             <path d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.5 20-21 0-1.3-.2-2.7-.5-4z" fill="#FFC107"/>
             <path d="M6.3 14.7l7 5.1C15.1 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3c-7.6 0-14.2 4.3-17.7 11.7z" fill="#FF3D00"/>
@@ -58,7 +54,6 @@ export default function RegisterPage() {
           onClick={() => signIn('microsoft-entra-id', { callbackUrl: '/' })}
           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-700 transition-colors"
         >
-          {/* Microsoft icon */}
           <svg width="18" height="18" viewBox="0 0 21 21" fill="none">
             <rect x="1" y="1" width="9" height="9" fill="#F25022"/>
             <rect x="11" y="1" width="9" height="9" fill="#7FBA00"/>
@@ -72,7 +67,6 @@ export default function RegisterPage() {
           onClick={() => signIn('facebook', { callbackUrl: '/' })}
           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-700 transition-colors"
         >
-          {/* Facebook icon */}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
             <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
           </svg>
@@ -80,12 +74,10 @@ export default function RegisterPage() {
         </button>
       </div>
 
-      {/* Divider */}
       <p className="text-center text-violet-600 font-semibold text-sm mb-5">
         ó Registrate con Tus Datos
       </p>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="text"
@@ -112,7 +104,6 @@ export default function RegisterPage() {
           className="w-full bg-gray-900 text-white placeholder-gray-400 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-500"
         />
 
-        {/* Terms checkbox */}
         <label className="flex items-start gap-2 text-xs text-gray-600 mt-1 cursor-pointer">
           <input
             type="checkbox"

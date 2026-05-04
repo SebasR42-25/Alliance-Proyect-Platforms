@@ -14,7 +14,6 @@ const HELP_CARDS = [
 export default function HelpPage() {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-brand-orange flex flex-col items-center justify-center px-6 py-16">
-      {/* Title */}
       <h1 className="text-6xl font-black text-gray-900 mb-3 text-center">
         Help Center
       </h1>
@@ -22,7 +21,6 @@ export default function HelpPage() {
         Here you Can Found Our Principal Sections Designed Just For You
       </p>
 
-      {/* 4 × 2 grid of yellow cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 w-full max-w-3xl">
         {HELP_CARDS.map(({ label, href }) => (
           <Link

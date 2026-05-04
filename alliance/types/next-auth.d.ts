@@ -2,7 +2,6 @@ import { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   interface Session {
-    /** JWT del backend NestJS — se envía en Authorization: Bearer */
     accessToken?: string;
     user: {
       id: string;

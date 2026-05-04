@@ -14,7 +14,6 @@ import { getChatSocket } from '@/lib/socket';
 import { showToast } from '@/lib/toast';
 import type { Conversation, Message, User } from '@/types';
 
-/* ─── Helpers ────────────────────────────────────────────── */
 function getOtherParticipant(conv: Conversation, myId?: string): User | null {
   const other = conv.participants.find((p) => {
     const id = typeof p === 'object' ? (p as User)._id : p;
@@ -32,7 +31,6 @@ function formatTime(iso: string): string {
   return `${Math.floor(diffH / 24)}d`;
 }
 
-/* ─── New Chat Modal ─────────────────────────────────────── */
 function NewChatModal({
   token,
   myId,
@@ -120,7 +118,6 @@ function NewChatModal({
   );
 }
 
-/* ─── Conversation List ──────────────────────────────────── */
 function ConversationList({
   conversations,
   selected,
@@ -233,7 +230,6 @@ function ConversationList({
   );
 }
 
-/* ─── Auto-reply pool ────────────────────────────────────── */
 const AUTO_REPLIES = [
   '¡Interesante! Cuéntame más sobre eso.',
   'Claro, estoy disponible. ¿Cuándo podemos coordinar una llamada?',
@@ -252,7 +248,6 @@ type LocalMsg = {
   ts:        string;
 };
 
-/* ─── Chat Window ────────────────────────────────────────── */
 function ChatWindow({ convId, conv, myId }: { convId: string; conv?: Conversation; myId?: string }) {
   const { data: session } = useSession();
   const token             = session?.accessToken;
@@ -438,7 +433,6 @@ function ChatWindow({ convId, conv, myId }: { convId: string; conv?: Conversatio
   );
 }
 
-/* ─── Right Panel ────────────────────────────────────────── */
 const MOCK_FILES = [
   { id: 'f1', name: '48.pdf',         type: 'pdf', size: '9kB'  },
   { id: 'f2', name: 'Screenshot.png', type: 'img', size: '8kB'  },
@@ -503,7 +497,6 @@ function RightPanel({ participants }: { participants: (User | string)[] }) {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function ChatPage() {
   const { data: session }  = useSession();
   const token              = session?.accessToken;

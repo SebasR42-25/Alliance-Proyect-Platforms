@@ -13,13 +13,15 @@ import {
   Clock, ChevronRight, UserPlus, Camera, Loader2,
 } from 'lucide-react';
 import { getPosts, toggleLike, addComment, createPost } from '@/services/posts.service';
-import { getNetwork }  from '@/services/users.service';
+import { getNetwork, sendConnectionRequest }  from '@/services/users.service';
 import { getStories }  from '@/services/stories.service';
 import { getJobs }     from '@/services/jobs.service';
 import { getTechNews } from '@/services/news.service';
+import { showToast } from '@/lib/toast';
+import CompanyLogo from '@/components/ui/company-logo';
+import StoryViewer from '@/components/ui/story-viewer';
 import type { Post, User, Story, Job, NewsArticle } from '@/types';
 
-/* ─── helpers ────────────────────────────────────────────── */
 function UserAvatar({ user, size = 36 }: { user?: User | string | null; size?: number }) {
   const name = user && typeof user === 'object' ? user.name ?? 'U' : 'U';
   const pic  = user && typeof user === 'object' ? user.profilePicture : undefined;
@@ -39,7 +41,6 @@ function timeAgo(iso: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-/* ─── Left Sidebar ───────────────────────────────────────── */
 const LEFT_NAV = [
   { label: 'Feed',          icon: BarChart2,  badge: 19, href: '/'           },
   { label: 'Stories',       icon: BookOpen,   badge: 0,  href: '/reels'      },
@@ -86,7 +87,6 @@ function LeftSidebar() {
   );
 }
 
-/* ─── Add Story Modal ────────────────────────────────────── */
 function AddStoryModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [file, setFile]         = useState<File | null>(null);
@@ -129,7 +129,7 @@ function AddStoryModal({ token, onClose }: { token: string; onClose: () => void 
         </div>
         <div className="p-6 flex flex-col gap-4">
           {preview ? (
-            <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-black">
+            <div className="relative w-full aspect-9/16 rounded-2xl overflow-hidden bg-black">
               {file?.type.startsWith('video') ? (
                 <video src={preview} className="w-full h-full object-cover" muted autoPlay loop />
               ) : (
@@ -158,11 +158,11 @@ function AddStoryModal({ token, onClose }: { token: string; onClose: () => void 
   );
 }
 
-/* ─── Stories Bar ────────────────────────────────────────── */
 const STORY_COLORS = ['bg-pink-200','bg-violet-200','bg-blue-200','bg-green-200','bg-yellow-200','bg-orange-200','bg-teal-200','bg-rose-200'];
 
 function StoriesBar({ stories, token }: { stories: Story[]; token?: string }) {
-  const [showAddStory, setShowAddStory] = useState(false);
+  const [showAddStory, setShowAddStory]   = useState(false);
+  const [viewerIndex,  setViewerIndex]    = useState<number | null>(null);
 
   const addBtn = (
     <button onClick={() => token && setShowAddStory(true)}
@@ -195,7 +195,7 @@ function StoriesBar({ stories, token }: { stories: Story[]; token?: string }) {
           const name   = author?.name ?? 'User';
           const pic    = author?.profilePicture;
           return (
-            <button key={s._id} className="flex flex-col items-center gap-1 shrink-0 group">
+            <button key={s._id} onClick={() => setViewerIndex(idx)} className="flex flex-col items-center gap-1 shrink-0 group">
               <div className={`w-12 h-12 rounded-full ring-2 ring-violet-400 ring-offset-2 overflow-hidden flex items-center justify-center group-hover:ring-violet-600 transition-all ${!pic ? STORY_COLORS[idx % STORY_COLORS.length] : ''}`}>
                 {pic ? <img src={pic} alt={name} className="w-full h-full object-cover" /> : <span className="text-sm font-bold text-gray-700">{name.charAt(0).toUpperCase()}</span>}
               </div>
@@ -205,11 +205,13 @@ function StoriesBar({ stories, token }: { stories: Story[]; token?: string }) {
         })}
       </div>
       {showAddStory && token && <AddStoryModal token={token} onClose={() => setShowAddStory(false)} />}
+      {viewerIndex !== null && (
+        <StoryViewer stories={stories} initialIndex={viewerIndex} onClose={() => setViewerIndex(null)} />
+      )}
     </>
   );
 }
 
-/* ─── Create Post Modal ──────────────────────────────────── */
 function CreatePostModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [content,   setContent]   = useState('');
@@ -262,7 +264,6 @@ function CreatePostModal({ token, onClose }: { token: string; onClose: () => voi
   );
 }
 
-/* ─── Post Card ──────────────────────────────────────────── */
 function PostCard({ post, token }: { post: Post; token?: string }) {
   const qc = useQueryClient();
   const [commentText,   setCommentText]   = useState('');
@@ -355,14 +356,13 @@ function PostCard({ post, token }: { post: Post; token?: string }) {
   );
 }
 
-/* ─── Feed Job Card ──────────────────────────────────────── */
 function FeedJobCard({ job }: { job: Job }) {
-  const companyName = typeof job.company === 'object' ? job.company.name : 'Company';
-  const logoUrl     = typeof job.company === 'object' ? job.company.logoUrl : undefined;
+  const companyObj  = typeof job.company === 'object' ? job.company : null;
+  const companyName = companyObj?.name ?? 'Company';
   return (
     <div className="flex items-start gap-3 py-2">
-      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-        {logoUrl ? <img src={logoUrl} alt={companyName} className="w-full h-full object-contain p-1" /> : <Briefcase size={18} className="text-gray-400" />}
+      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden p-1">
+        <CompanyLogo name={companyName} domain={companyObj?.domain} logoUrl={companyObj?.logoUrl} size={32} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-bold text-gray-900 truncate">{job.title}</p>
@@ -379,7 +379,6 @@ function FeedJobCard({ job }: { job: Job }) {
   );
 }
 
-/* ─── News Article Card ──────────────────────────────────── */
 function NewsCard({ article }: { article: NewsArticle }) {
   return (
     <a href={article.url} target="_blank" rel="noopener noreferrer"
@@ -402,7 +401,6 @@ function NewsCard({ article }: { article: NewsArticle }) {
   );
 }
 
-/* ─── Right Sidebar ──────────────────────────────────────── */
 function RightSidebar({ users, jobs, news }: { users: User[]; jobs: Job[]; news: NewsArticle[] }) {
   return (
     <aside className="hidden xl:flex flex-col w-72 shrink-0 gap-4">
@@ -451,7 +449,6 @@ function RightSidebar({ users, jobs, news }: { users: User[]; jobs: Job[]; news:
         }
       </div>
 
-      {/* Profile Activity */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <h3 className="font-bold text-sm text-gray-900 mb-3">Profile Activity</h3>
         <div className="flex items-center gap-3 mb-2">
@@ -473,7 +470,6 @@ function RightSidebar({ users, jobs, news }: { users: User[]; jobs: Job[]; news:
         <p className="text-[10px] text-gray-500">You gained a substantial amount of followers this month!</p>
       </div>
 
-      {/* Tech News */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -498,7 +494,6 @@ function RightSidebar({ users, jobs, news }: { users: User[]; jobs: Job[]; news:
   );
 }
 
-/* ─── Featured Jobs in Feed ──────────────────────────────── */
 function FeedJobsBanner({ jobs }: { jobs: Job[] }) {
   if (jobs.length === 0) return null;
   return (
@@ -514,13 +509,13 @@ function FeedJobsBanner({ jobs }: { jobs: Job[] }) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {jobs.slice(0, 4).map((j) => {
-          const companyName = typeof j.company === 'object' ? j.company.name : 'Company';
-          const logoUrl     = typeof j.company === 'object' ? j.company.logoUrl : undefined;
+          const companyObj  = typeof j.company === 'object' ? j.company : null;
+          const companyName = companyObj?.name ?? 'Company';
           return (
             <div key={j._id} className="border border-gray-100 rounded-xl p-3 hover:border-violet-200 hover:bg-violet-50/30 transition-all">
               <div className="flex items-start gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-                  {logoUrl ? <img src={logoUrl} alt={companyName} className="w-full h-full object-contain p-0.5" /> : <Briefcase size={14} className="text-gray-400" />}
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+                  <CompanyLogo name={companyName} domain={companyObj?.domain} logoUrl={companyObj?.logoUrl} size={28} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-gray-900 truncate">{j.title}</p>
@@ -542,7 +537,6 @@ function FeedJobsBanner({ jobs }: { jobs: Job[] }) {
   );
 }
 
-/* ─── News in Feed ───────────────────────────────────────── */
 function FeedNewsBanner({ news }: { news: NewsArticle[] }) {
   if (news.length === 0) return null;
   return (
@@ -577,7 +571,25 @@ function FeedNewsBanner({ news }: { news: NewsArticle[] }) {
   );
 }
 
-/* ─── People You May Know ─────────────────────────────────── */
+function ConnectButton({ user, token, qc }: { user: User; token?: string; qc: ReturnType<typeof useQueryClient> }) {
+  const mutation = useMutation({
+    mutationFn: () => sendConnectionRequest(token!, user._id),
+    onSuccess:  () => {
+      qc.invalidateQueries({ queryKey: ['network'] });
+      showToast({ message: 'Connection request sent', sub: user.name, type: 'success' });
+    },
+  });
+  return (
+    <button
+      onClick={() => token && mutation.mutate()}
+      disabled={!token || mutation.isPending || mutation.isSuccess}
+      className="w-full text-[10px] font-bold text-violet-600 border border-violet-200 py-1 rounded-lg hover:bg-violet-50 transition-colors flex items-center justify-center gap-1 disabled:opacity-40"
+    >
+      <UserPlus size={10} /> {mutation.isSuccess ? 'Sent ✓' : 'Connect'}
+    </button>
+  );
+}
+
 function PeopleYouMayKnow({ users, token }: { users: User[]; token?: string }) {
   const qc = useQueryClient();
   if (users.length < 3) return null;
@@ -600,12 +612,7 @@ function PeopleYouMayKnow({ users, token }: { users: User[]; token?: string }) {
               <p className="text-xs font-bold text-gray-900 truncate">{u.name}</p>
               {u.bio && <p className="text-[10px] text-gray-400 truncate">{u.bio}</p>}
             </div>
-            <button
-              onClick={() => {}}
-              className="w-full text-[10px] font-bold text-violet-600 border border-violet-200 py-1 rounded-lg hover:bg-violet-50 transition-colors flex items-center justify-center gap-1"
-            >
-              <UserPlus size={10} /> Connect
-            </button>
+            <ConnectButton user={u} token={token} qc={qc} />
           </div>
         ))}
       </div>
@@ -613,7 +620,6 @@ function PeopleYouMayKnow({ users, token }: { users: User[]; token?: string }) {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function FeedPage() {
   const { data: session }  = useSession();
   const token              = session?.accessToken;

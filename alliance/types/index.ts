@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════════════════
-   Tipos derivados de los schemas Mongoose del backend
-   ═══════════════════════════════════════════════════════ */
-
-// ─── User ────────────────────────────────────────────────────────────────────
 export interface User {
   _id: string;
   name: string;
@@ -26,7 +21,6 @@ export interface AuthUser {
   email: string;
 }
 
-// ─── Post ────────────────────────────────────────────────────────────────────
 export interface Comment {
   _id?: string;
   user: User | string;
@@ -46,11 +40,11 @@ export interface Post {
   updatedAt: string;
 }
 
-// ─── Company ─────────────────────────────────────────────────────────────────
 export interface Company {
   _id: string;
   name: string;
   logoUrl?: string;
+  domain?: string;
   description?: string;
   availableJobs: number;
   industry?: string;
@@ -58,7 +52,6 @@ export interface Company {
   updatedAt: string;
 }
 
-// ─── Job ─────────────────────────────────────────────────────────────────────
 export interface Job {
   _id: string;
   title: string;
@@ -73,7 +66,6 @@ export interface Job {
   updatedAt: string;
 }
 
-// ─── Reel ────────────────────────────────────────────────────────────────────
 export interface Reel {
   _id: string;
   author: User | string;
@@ -84,7 +76,6 @@ export interface Reel {
   updatedAt: string;
 }
 
-// ─── Story ───────────────────────────────────────────────────────────────────
 export interface Story {
   _id: string;
   author: User | string;
@@ -94,7 +85,6 @@ export interface Story {
   createdAt: string;
 }
 
-// ─── Chat ────────────────────────────────────────────────────────────────────
 export interface Message {
   _id: string;
   conversationId: string;
@@ -112,7 +102,6 @@ export interface Conversation {
   updatedAt: string;
 }
 
-// ─── News ────────────────────────────────────────────────────────────────────
 export interface NewsArticle {
   title: string;
   description?: string;
@@ -123,7 +112,6 @@ export interface NewsArticle {
   author?: string;
 }
 
-// ─── API responses genéricos ─────────────────────────────────────────────────
 export interface ApiMessage {
   message: string;
 }

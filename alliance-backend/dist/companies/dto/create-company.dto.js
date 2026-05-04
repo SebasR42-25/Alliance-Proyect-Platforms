@@ -15,6 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 class CreateCompanyDto {
     name;
     logoUrl;
+    domain;
     description;
     industry;
 }
@@ -31,6 +32,12 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "logoUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'amazon.com', required: false }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "domain", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Parque tecnológico y de negocios', required: false }),
     (0, class_validator_1.IsString)(),

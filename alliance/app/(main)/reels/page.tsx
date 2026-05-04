@@ -15,7 +15,6 @@ import { getCompanies } from '@/services/companies.service';
 import { createJob } from '@/services/jobs.service';
 import type { Reel, User } from '@/types';
 
-/* ─── Mock data ──────────────────────────────────────────── */
 type MockUser = { name: string; handle: string };
 const MOCK_SUGGESTED: MockUser[] = [
   { name: 'X_AE_A-13',       handle: '@xtheobliterator'    },
@@ -32,7 +31,6 @@ const MOCK_FOLLOWING: MockUser[] = [
 ];
 const COLORS = ['bg-violet-200','bg-pink-200','bg-blue-200','bg-green-200','bg-yellow-200','bg-orange-200','bg-teal-200','bg-rose-200'];
 
-/* ─── Left sidebar ───────────────────────────────────────── */
 function ReelsSidebar({ users }: { users: User[] }) {
   const suggested = users.slice(0, 5);
   const following  = users.slice(5, 9);
@@ -100,7 +98,6 @@ function ReelsSidebar({ users }: { users: User[] }) {
   );
 }
 
-/* ─── Reel card (matches design reference layout) ────────── */
 function ReelCard({ reel, myId }: { reel: Reel; myId?: string }) {
   const videoRef          = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
@@ -175,7 +172,6 @@ function ReelCard({ reel, myId }: { reel: Reel; myId?: string }) {
   );
 }
 
-/* ─── Placeholder reel card ──────────────────────────────── */
 function PlaceholderCard({ index }: { index: number }) {
   const [liked, setLiked] = useState(false);
   const BG = ['bg-slate-700', 'bg-gray-800', 'bg-zinc-800'];
@@ -240,7 +236,6 @@ function PlaceholderCard({ index }: { index: number }) {
   );
 }
 
-/* ─── Upload Reel Modal ──────────────────────────────────── */
 function UploadModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [file, setFile]       = useState<File | null>(null);
@@ -288,7 +283,6 @@ function UploadModal({ token, onClose }: { token: string; onClose: () => void })
   );
 }
 
-/* ─── Quick Job Post Modal ───────────────────────────────── */
 function QuickJobModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [form, setForm] = useState({ title: '', company: '', location: '', tagsInput: '' });
@@ -357,7 +351,6 @@ function QuickJobModal({ token, onClose }: { token: string; onClose: () => void 
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function ReelsPage() {
   const { data: session } = useSession();
   const token             = session?.accessToken;

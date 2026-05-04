@@ -6,12 +6,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'ui-avatars.com' },
+      { protocol: 'https', hostname: 'img.logo.dev' },
       { protocol: 'https', hostname: '**' },
     ],
   },
 
-  // Fix: evita el warning de workspace root de Turbopack
-  // cuando hay varios package-lock.json en el árbol de directorios
   turbopack: {
     root: path.resolve(__dirname),
   },

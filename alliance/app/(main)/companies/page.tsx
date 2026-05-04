@@ -7,23 +7,22 @@ import Link from 'next/link';
 import { ChevronRight, ArrowRight, Plus, X, Building2, Tag } from 'lucide-react';
 import { getCompanies, createCompany } from '@/services/companies.service';
 import { showToast } from '@/lib/toast';
+import CompanyLogo from '@/components/ui/company-logo';
 import type { Company } from '@/types';
 
-/* ─── Industry options ───────────────────────────────────── */
 const INDUSTRIES = [
   'Technology', 'Finance & Banking', 'Healthcare', 'Education',
   'E-commerce & Retail', 'Consulting', 'Media & Entertainment',
   'Manufacturing', 'Logistics', 'Government', 'Energy', 'Real Estate',
 ];
 
-/* ─── Create Company Modal ───────────────────────────────── */
 function CreateCompanyModal({ token, onClose }: { token: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [form, setForm] = useState({
     name:          '',
     description:   '',
     industry:      '',
-    logoUrl:       '',
+    domain:        '',
     availableJobs: '',
   });
 
@@ -32,7 +31,7 @@ function CreateCompanyModal({ token, onClose }: { token: string; onClose: () => 
       name:          form.name,
       description:   form.description || undefined,
       industry:      form.industry || undefined,
-      logoUrl:       form.logoUrl || undefined,
+      domain:        form.domain || undefined,
       availableJobs: form.availableJobs ? parseInt(form.availableJobs, 10) : 0,
     }),
     onSuccess: () => {
@@ -56,12 +55,12 @@ function CreateCompanyModal({ token, onClose }: { token: string; onClose: () => 
         </div>
 
         <div className="p-6 flex flex-col gap-4">
-          {/* Logo preview */}
-          {form.logoUrl && (
+          {form.domain && (
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-              <img src={form.logoUrl} alt="logo preview" className="w-14 h-14 rounded-xl object-contain bg-white border border-gray-100 p-1"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              <p className="text-xs text-gray-500">Logo preview</p>
+              <div className="w-14 h-14 rounded-xl bg-white border border-gray-100 flex items-center justify-center overflow-hidden">
+                <CompanyLogo name={form.name || '?'} domain={form.domain} size={48} />
+              </div>
+              <p className="text-xs text-gray-500">Logo preview via Logo.dev</p>
             </div>
           )}
 
@@ -73,11 +72,11 @@ function CreateCompanyModal({ token, onClose }: { token: string; onClose: () => 
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">Logo URL</label>
-            <input value={form.logoUrl} onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
-              placeholder="https://example.com/logo.png"
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">Website Domain</label>
+            <input value={form.domain} onChange={(e) => setForm({ ...form, domain: e.target.value })}
+              placeholder="e.g. apple.com, google.com"
               className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-300" />
-            <p className="text-[10px] text-gray-400 mt-1">Paste the URL of the company logo image</p>
+            <p className="text-[10px] text-gray-400 mt-1">Used to fetch the company logo automatically</p>
           </div>
 
           <div>
@@ -125,16 +124,11 @@ function CreateCompanyModal({ token, onClose }: { token: string; onClose: () => 
   );
 }
 
-/* ─── Company Card ───────────────────────────────────────── */
 function CompanyCard({ company }: { company: Company }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-shadow">
-      <div className="w-20 h-20 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-        {company.logoUrl
-          ? <img src={company.logoUrl} alt={`${company.name} logo`} className="w-full h-full object-contain p-2"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-          : <span className="text-3xl font-black text-gray-300">{company.name.charAt(0).toUpperCase()}</span>
-        }
+      <div className="w-20 h-20 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-2">
+        <CompanyLogo name={company.name} domain={company.domain} logoUrl={company.logoUrl} size={64} />
       </div>
 
       {company.availableJobs > 0 && (
@@ -160,7 +154,6 @@ function CompanyCard({ company }: { company: Company }) {
   );
 }
 
-/* ─── Skeleton ───────────────────────────────────────────── */
 function SkeletonCard() {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse flex flex-col gap-4">
@@ -176,7 +169,6 @@ function SkeletonCard() {
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
 export default function CompaniesPage() {
   const { data: session }  = useSession();
   const token              = session?.accessToken;
@@ -190,14 +182,12 @@ export default function CompaniesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-xs text-gray-400 mb-6">
         <Link href="/" className="hover:text-gray-600 transition-colors">Home</Link>
         <ChevronRight size={12} />
         <span className="text-gray-600 font-medium">Companies</span>
       </nav>
 
-      {/* Header */}
       <div className="flex items-end justify-between mb-6">
         <div>
           <h1 className="text-2xl font-black text-gray-900">Featured Employers on Alliance</h1>
@@ -218,7 +208,6 @@ export default function CompaniesPage() {
         </div>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10">
         {isLoading
           ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
@@ -236,7 +225,6 @@ export default function CompaniesPage() {
         )}
       </div>
 
-      {/* CTA Banner */}
       <div className="bg-brand-lavender rounded-3xl p-8 flex items-center justify-between overflow-hidden relative">
         <div className="relative z-10 max-w-md">
           <p className="text-sm text-gray-600 mb-1">Compare your Salary with other Alliance Members in Similar Roles.</p>
@@ -252,7 +240,6 @@ export default function CompaniesPage() {
         <div className="absolute right-20 bottom-0 w-24 h-24 bg-violet-400/20 rounded-full translate-y-1/2" />
       </div>
 
-      {/* Floating + button */}
       {token && (
         <button
           onClick={() => setShowCreate(true)}

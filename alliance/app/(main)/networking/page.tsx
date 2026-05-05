@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Users, Zap, ChevronRight, MessageSquare, UserPlus } from 'lucide-react';
-import { getNetwork, sendConnectionRequest } from '@/services/users.service';
+import { getNetwork, sendConnectionRequest, getUsers } from '@/services/users.service';
 import { createConversation } from '@/services/chat.service';
 import { showToast } from '@/lib/toast';
 import type { User } from '@/types';
@@ -34,6 +34,7 @@ function RecruiterCard({
       qc.invalidateQueries({ queryKey: ['network'] });
       showToast({ message: 'Connection request sent', sub: user.name, type: 'success' });
     },
+    onError: () => showToast({ message: 'Could not send request', sub: user.name, type: 'error' }),
   });
 
   const messageMutation = useMutation({
@@ -42,6 +43,7 @@ function RecruiterCard({
       showToast({ message: 'Opening chat', sub: user.name, type: 'info' });
       router.push(`/chat?with=${userId}`);
     },
+    onError: () => showToast({ message: 'Could not start conversation', sub: user.name, type: 'error' }),
   });
 
   const initials = user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
@@ -103,23 +105,41 @@ export default function NetworkingPage() {
   const { data: session } = useSession();
   const token             = session?.accessToken;
 
-  const { data: networkUsers = [], isLoading } = useQuery({
+  const { data: networkUsers = [], isLoading: networkLoading } = useQuery({
     queryKey:  ['network'],
     enabled:   !!token,
     queryFn:   () => getNetwork(token!),
     staleTime: 60_000,
   });
 
-  const realRecruiters = networkUsers.slice(0, 8).map((u: User) => ({
+  const { data: allUsers = [], isLoading: usersLoading } = useQuery({
+    queryKey:  ['users-all'],
+    queryFn:   getUsers,
+    staleTime: 60_000,
+  });
+
+  const isLoading = networkLoading || usersLoading;
+
+  const toCard = (u: User) => ({
     _id:            u._id,
     name:           u.name,
     role:           u.bio ?? 'Professional',
     company:        u.location ?? '',
     hiring:         u.skills?.slice(0, 2).join(', ') ?? '',
     profilePicture: u.profilePicture,
-  }));
+  });
 
-  const recruiters = realRecruiters.length > 0 ? realRecruiters : MOCK_RECRUITERS;
+  const networkCards = networkUsers.slice(0, 8).map(toCard);
+  const suggestionCards = allUsers
+    .filter((u) => u._id !== session?.user?.id)
+    .slice(0, 8)
+    .map(toCard);
+
+  const recruiters = networkCards.length > 0
+    ? networkCards
+    : suggestionCards.length > 0
+      ? suggestionCards
+      : MOCK_RECRUITERS;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -152,7 +172,7 @@ export default function NetworkingPage() {
         </button>
       </div>
 
-      {isLoading && !token ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 animate-pulse flex flex-col items-center gap-3">

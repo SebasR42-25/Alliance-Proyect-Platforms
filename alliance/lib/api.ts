@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { signOut } from 'next-auth/react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api';
 
@@ -19,6 +20,9 @@ export function createAuthClient(accessToken: string): AxiosInstance {
   client.interceptors.response.use(
     (res) => res,
     (err) => {
+      if (err?.response?.status === 401 && typeof window !== 'undefined') {
+        signOut({ callbackUrl: '/login' });
+      }
       const msg =
         err?.response?.data?.message ??
         err?.message ??

@@ -38,7 +38,7 @@ let JobsService = class JobsService {
             filters.company = new mongoose_2.Types.ObjectId(query.company);
         return this.jobModel
             .find(filters)
-            .populate('company', 'name logoUrl')
+            .populate('company', 'name domain logoUrl')
             .exec();
     }
     async findOne(id) {

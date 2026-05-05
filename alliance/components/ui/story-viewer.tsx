@@ -54,16 +54,14 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
     }
     const step = 100 / (STORY_DURATION / 50);
     intervalRef.current = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          goNext();
-          return 0;
-        }
-        return p + step;
-      });
+      setProgress((p) => Math.min(p + step, 100));
     }, 50);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [paused, current, goNext]);
+
+  useEffect(() => {
+    if (progress >= 100) goNext();
+  }, [progress, goNext]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

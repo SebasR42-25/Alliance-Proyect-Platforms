@@ -1,3 +1,4 @@
+// socket.ts
 'use client';
 
 import { io, Socket } from 'socket.io-client';
@@ -12,7 +13,7 @@ export function getChatSocket(token: string): Socket {
     chatSocket = io(SOCKET_URL, {
       auth: { token },
       autoConnect: false,
-      transports: ['websocket'],
+      // Quitamos la línea de transports
     });
   }
   return chatSocket;
@@ -23,7 +24,7 @@ export function getNotifSocket(token: string): Socket {
     notifSocket = io(`${SOCKET_URL}/notifications`, {
       auth: { token },
       autoConnect: false,
-      transports: ['websocket'],
+      // Quitamos la línea de transports
     });
   }
   return notifSocket;

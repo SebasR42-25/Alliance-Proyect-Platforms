@@ -76,7 +76,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.accessToken = data.access_token;
             token.userId      = data.user.id;
           }
-        } catch {
+        } catch (e) {
+          console.error('[NextAuth] OAuth backend login failed:', e);
         }
       }
       return token;

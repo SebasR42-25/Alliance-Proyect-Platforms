@@ -6,10 +6,10 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-@WebSocketGateway({ cors: { origin: '*' }, namespace: 'notifications' })
+@WebSocketGateway({ cors: { origin: 'http://localhost:3001' }, namespace: 'notifications' })
 export class NotificationsGateway {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
   @SubscribeMessage('joinNotifications')
   handleJoin(@MessageBody() userId: string, @ConnectedSocket() client: Socket) {
     client.join(`notify_${userId}`);

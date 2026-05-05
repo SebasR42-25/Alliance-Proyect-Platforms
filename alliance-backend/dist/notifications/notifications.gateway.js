@@ -39,6 +39,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NotificationsGateway.prototype, "handleJoin", null);
 exports.NotificationsGateway = NotificationsGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ cors: { origin: '*' }, namespace: 'notifications' })
+    (0, websockets_1.WebSocketGateway)({ cors: { origin: 'http://localhost:3001' }, namespace: 'notifications' })
 ], NotificationsGateway);
 //# sourceMappingURL=notifications.gateway.js.map

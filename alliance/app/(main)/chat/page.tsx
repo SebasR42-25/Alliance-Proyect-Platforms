@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -272,13 +272,33 @@ function ChatWindow({ convId, conv, myId }: { convId: string; conv?: Conversatio
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [dbMessages, localMsgs, typing, convId]);
 
+  const convIdRef = useRef(convId);
+  useEffect(() => { convIdRef.current = convId; }, [convId]);
+
   useEffect(() => {
     if (!token || !myId) return;
     const socket = getChatSocket(token);
-    socket.connect();
-    socket.emit('join', myId);
-    return () => { socket.disconnect(); };
-  }, [token, myId]);
+
+    const onConnect = () => { socket.emit('join', myId); };
+    const onNewMessage = (msg: Message) => {
+      qc.invalidateQueries({ queryKey: ['messages', convIdRef.current] });
+      qc.invalidateQueries({ queryKey: ['conversations'] });
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('newMessage', onNewMessage);
+
+    if (socket.connected) {
+      socket.emit('join', myId);
+    } else {
+      socket.connect();
+    }
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('newMessage', onNewMessage);
+    };
+  }, [token, myId, qc]);
 
   const handleSend = () => {
     if (!text.trim() || !token || !myId) return;

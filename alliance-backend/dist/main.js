@@ -7,8 +7,16 @@ const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
-        origin: 'http://localhost:3001',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        origin: [
+            'http://localhost:3001',
+            'http://localhost:3000',
+            'http://localhost:8081',
+            /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/,
+            /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/,
+            /^exp:\/\//,
+        ],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type,Authorization',
         credentials: true,
     });
     app.setGlobalPrefix('api');
@@ -26,8 +34,8 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api/docs', app, document);
     const port = process.env.PORT || 3000;
-    await app.listen(port);
-    console.log(`🚀 Alliance Backend corriendo en: http://localhost:${port}/api`);
+    await app.listen(port, '0.0.0.0');
+    console.log(`🚀 Alliance Backend corriendo en: http://0.0.0.0:${port}/api`);
     console.log(`📖 Documentación disponible en: http://localhost:${port}/api/docs`);
 }
 bootstrap();

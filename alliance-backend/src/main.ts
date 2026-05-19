@@ -5,8 +5,16 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:3001', // En producción, aquí pondrías la URL de tu frontend
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: [
+      'http://localhost:3001', // Next.js web
+      'http://localhost:3000', // Web dev
+      'http://localhost:8081', // Expo web
+      /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/,  // LAN física
+      /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/,   // Android emulator
+      /^exp:\/\//,                               // Expo Go deep link
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
   });
   app.setGlobalPrefix('api');
@@ -28,8 +36,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
   const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 Alliance Backend corriendo en: http://localhost:${port}/api`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Alliance Backend corriendo en: http://0.0.0.0:${port}/api`);
   console.log(
     `📖 Documentación disponible en: http://localhost:${port}/api/docs`,
   );
